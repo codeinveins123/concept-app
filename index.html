@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Лекция 6 — Прототипирование</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#171a2b; --card:#1e2238; --line:#2c3150;
+    --text:#e8eaf6; --muted:#9aa0c0; --accent:#6c8cff; --accent2:#22d3a6;
+    --warn:#ffb020; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;
+    padding:0 0 80px;
+  }
+  header{
+    padding:48px 24px 32px;text-align:center;
+    background:radial-gradient(circle at 50% 0%,#23285a 0%,transparent 70%);
+  }
+  header h1{font-size:2rem;margin-bottom:8px}
+  header p{color:var(--muted);max-width:640px;margin:0 auto}
+  .badge{
+    display:inline-block;background:var(--accent);color:#fff;font-size:.75rem;
+    padding:4px 12px;border-radius:999px;margin-bottom:16px;letter-spacing:.5px;
+  }
+  main{max-width:1000px;margin:0 auto;padding:0 24px}
+  section{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:28px;margin-top:28px;
+  }
+  section h2{
+    font-size:1.3rem;margin-bottom:18px;display:flex;align-items:center;gap:10px;
+  }
+  section h2 .num{
+    background:var(--accent);color:#fff;width:30px;height:30px;border-radius:50%;
+    display:grid;place-items:center;font-size:.9rem;flex-shrink:0;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .fidelity{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;
+  }
+  .fidelity h3{font-size:1.05rem;margin-bottom:8px}
+  .fidelity.low h3{color:var(--warn)}
+  .fidelity.mid h3{color:var(--accent2)}
+  .fidelity ul{margin:12px 0 0 18px;color:var(--muted);font-size:.92rem}
+  .fidelity li{margin-bottom:6px}
+  .sketch{
+    border:2px dashed var(--warn);border-radius:10px;height:150px;
+    display:grid;place-items:center;color:var(--muted);font-size:.85rem;
+    background:repeating-linear-gradient(45deg,#1a1d30,#1a1d30 8px,#1f2338 8px,#1f2338 16px);
+    margin-top:14px;text-align:center;padding:10px;
+  }
+  .wire{
+    border:2px solid #3a4066;border-radius:10px;height:150px;margin-top:14px;
+    display:grid;grid-template-rows:auto 1fr auto;gap:6px;padding:10px;background:#12152a;
+  }
+  .wire .bar{height:10px;background:#3a4066;border-radius:3px}
+  .wire .bar.sm{width:50%}
+  .wire .body{background:repeating-linear-gradient(0deg,#2a2f4d,#2a2f4d 6px,transparent 6px,transparent 14px);border-radius:4px}
+  .wire .foot{height:14px;background:#3a4066;border-radius:3px;width:40%}
+
+  /* Course card demo */
+  .card-demo{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  .course-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px;width:300px;flex-shrink:0;transition:.2s;
+  }
+  .course-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .course-card .tag{
+    font-size:.7rem;background:rgba(108,140,255,.2);color:var(--accent);
+    padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:12px;
+  }
+  .course-card h4{font-size:1.1rem;margin-bottom:6px}
+  .course-card .meta{color:var(--muted);font-size:.85rem;margin-bottom:14px}
+  .btn{
+    background:var(--accent);color:#fff;border:none;padding:10px 18px;
+    border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:600;transition:.2s;
+  }
+  .btn:hover{filter:brightness(1.12)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+  .btn.ghost:hover{border-color:var(--accent)}
+
+  /* Modal */
+  .modal-back{
+    position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;
+    place-items:center;padding:20px;z-index:100;
+  }
+  .modal-back.open{display:grid}
+  .modal{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:28px;max-width:440px;width:100%;position:relative;
+  }
+  .modal h3{margin-bottom:6px}
+  .modal .sub{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+  .modal label{display:block;font-size:.82rem;color:var(--muted);margin:12px 0 5px}
+  .modal input,.modal select{
+    width:100%;background:#12152a;border:1px solid var(--line);border-radius:9px;
+    padding:10px 12px;color:var(--text);font-size:.92rem;outline:none;
+  }
+  .modal input:focus,.modal select:focus{border-color:var(--accent)}
+  .modal-close{
+    position:absolute;top:14px;right:14px;background:none;border:none;
+    color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;
+  }
+  .modal-actions{display:flex;gap:10px;margin-top:22px}
+  .modal-actions .btn{flex:1;justify-content:center}
+
+  /* Wizard of Oz */
+  .oz{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px;margin-top:16px;
+  }
+  .chat{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;min-height:120px}
+  .msg{padding:10px 14px;border-radius:12px;max-width:85%;font-size:.9rem;animation:fade .3s}
+  .msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+  .msg.bot{background:#2a2f4d;align-self:flex-start;border-bottom-left-radius:3px}
+  .msg.typing{color:var(--muted);font-style:italic}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .oz-input{display:flex;gap:8px}
+  .oz-input input{
+    flex:1;background:#12152a;border:1px solid var(--line);border-radius:10px;
+    padding:11px 14px;color:var(--text);outline:none;font-size:.9rem;
+  }
+  .oz-input input:focus{border-color:var(--accent2)}
+  .operator-panel{
+    margin-top:18px;border-top:1px dashed var(--line);padding-top:16px;
+  }
+  .operator-panel h4{font-size:.85rem;color:var(--accent2);margin-bottom:10px;
+    text-transform:uppercase;letter-spacing:.5px}
+  .templates{display:flex;flex-wrap:wrap;gap:8px}
+  .tpl{
+    background:#12152a;border:1px solid var(--line);color:var(--muted);
+    padding:8px 12px;border-radius:9px;font-size:.82rem;cursor:pointer;transition:.2s;
+  }
+  .tpl:hover{border-color:var(--accent2);color:var(--text)}
+  .note{
+    background:rgba(34,211,166,.08);border-left:3px solid var(--accent2);
+    padding:12px 16px;border-radius:8px;font-size:.86rem;color:var(--muted);
+    margin-top:16px;
+  }
+  .note b{color:var(--accent2)}
+  .step-tip{color:var(--muted);font-size:.85rem;margin-top:8px}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:40px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="badge">ЛЕКЦИЯ 6</span>
+  <h1>Концептуальное проектирование</h1>
+  <p>Paper Prototyping · Wireframes · Метод «Волшебник страны Оз». Живой демо-конспект.</p>
+</header>
+
+<main>
+
+  <!-- ШАГ 1 -->
+  <section>
+    <h2><span class="num">1</span> Low-Fidelity vs Mid-Fidelity</h2>
+    <div class="grid2">
+      <div class="fidelity low">
+        <h3>📝 Low-Fidelity — бумажный скетч</h3>
+        <p>Рисуется на A4 + стикеры за <b>5 минут</b>. Не жалко выбросить.</p>
+        <ul>
+          <li>Цель — быстро проверить <b>идею и поток</b></li>
+          <li>Стикеры = элементы, которые можно переставлять</li>
+          <li>Тестируем сценарий, а не пиксели</li>
+          <li>Дешёво, быстро, живьём</li>
+        </ul>
+        <div class="sketch">[ набросок от руки ]<br>стикеры + маркер</div>
+      </div>
+      <div class="fidelity mid">
+        <h3>🔲 Mid-Fidelity — Wireframe</h3>
+        <p>Ч/б цифровой каркас (Wireframe.cc). Проверяем <b>сетку и навигацию</b>.</p>
+        <ul>
+          <li>Без цвета и контента — только структура</li>
+          <li>Проверяем расположение блоков и переходы</li>
+          <li>Быстрее финального дизайна, точнее скетча</li>
+          <li>Можно кликать и обсуждать с группой</li>
+        </ul>
+        <div class="wire">
+          <div class="bar"></div>
+          <div class="body"></div>
+          <div class="foot"></div>
+        </div>
+      </div>
+    </div>
+    <p class="step-tip">Сначала 5-минутный скетч на A4, потом переносим его в Wireframe.cc как ч/б каркас.</p>
+  </section>
+
+  <!-- ШАГ 2 -->
+  <section>
+    <h2><span class="num">2</span> Карточка курса + модальное окно</h2>
+    <div class="card-demo">
+      <div class="course-card">
+        <span class="tag">Frontend</span>
+        <h4>JavaScript с нуля</h4>
+        <div class="meta">12 модулей · 40 часов · старт 1 марта</div>
+        <button class="btn" onclick="openModal()">Записаться</button>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <p style="color:var(--muted);font-size:.9rem">
+          Кликните «Записаться» — откроется <b>модальное окно</b> с формой.
+          Это Mid-Fi компонент: сетка, поля, кнопки — без цвета и брендинга.
+        </p>
+        <p class="step-tip">Покажите группе: карточка → модалка → закрытие. Обсудите, где ломается поток.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Модалка -->
+  <div class="modal-back" id="modal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h3>Запись на курс</h3>
+      <div class="sub">JavaScript с нуля · старт 1 марта</div>
+      <label>Ваше имя</label>
+      <input type="text" placeholder="Даниил">
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com">
+      <label>Формат</label>
+      <select>
+        <option>Онлайн</option>
+        <option>Офлайн</option>
+        <option>Гибрид</option>
+      </select>
+      <div class="modal-actions">
+        <button class="btn ghost" onclick="closeModal()">Отмена</button>
+        <button class="btn" onclick="closeModal();alert('Демо: заявка отправлена')">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ШАГ 3 -->
+  <section>
+    <h2><span class="num">3</span> Живой тренажёр «Волшебник страны Оз»</h2>
+    <p style="color:var(--muted);font-size:.92rem;margin-bottom:12px">
+      Тестируем ИИ-ассистента расписания <b>до написания кода</b>: пользователь пишет запрос —
+      «за ширмой» оператор за 1 секунду выбирает готовый шаблон ответа.
+    </p>
+
+    <div class="oz">
+      <div class="chat" id="chat">
+        <div class="msg bot">Привет! Я ассистент расписания. Спросите: «Что у меня завтра?»</div>
+      </div>
+      <div class="oz-input">
+        <input id="userInput" type="text" placeholder="Например: перенеси пару по ЧКВ на пятницу..."
+               onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="btn" onclick="sendMsg()">Отправить</button>
+      </div>
+
+      <div class="operator-panel">
+        <h4>🎩 Панель оператора (за ширмой)</h4>
+        <p style="color:var(--muted);font-size:.82rem;margin-bottom:10px">
+          Нажмите шаблон — он мгновенно «ответит» от имени ИИ.
+        </p>
+        <div class="templates">
+          <button class="tpl" onclick="wizardReply('Завтра у вас 3 пары: ЧКВ (9:00), Матан (11:00), Английский (13:30).')">📅 Расписание на завтра</button>
+          <button class="tpl" onclick="wizardReply('Готово! Пара по ЧКВ перенесена на пятницу, 14:00. Напоминание придёт за час.')">🔄 Перенос пары</button>
+          <button class="tpl" onclick="wizardReply('Свободное окно: среда 15:00–17:00 и пятница 10:00–12:00. Забронировать?')">🕒 Свободное окно</button>
+          <button class="tpl" onclick="wizardReply('Напоминание включено: за 30 минут до каждой пары')">🔔 Напоминания</button>
+        </div>
+        <div class="note">
+          <b>Суть метода:</b> пользователь верит, что общается с ИИ, а на деле за ширмой —
+          живой оператор по шаблонам. Так проверяют сценарии и формулировки <b>без кода</b>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Демо-стенд</footer>
+
+<script>
+  function openModal(){document.getElementById('modal').classList.add('open')}
+  function closeModal(){document.getElementById('modal').classList.remove('open')}
+  document.getElementById('modal').addEventListener('click',e=>{
+    if(e.target.id==='modal') closeModal();
+  });
+
+  const chat=document.getElementById('chat');
+
+  function addMsg(text,who){
+    const d=document.createElement('div');
+    d.className='msg '+who;
+    d.textContent=text;
+    chat.appendChild(d);
+    chat.scrollTop=chat.scrollHeight;
+    return d;
+  }
+
+  function sendMsg(){
+    const input=document.getElementById('userInput');
+    const val=input.value.trim();
+    if(!val) return;
+    addMsg(val,'user');
+    input.value='';
+    const typing=addMsg('печатает…','bot typing');
+    // «Волшебник» отвечает за 1 секунду — но ждёт шаблон оператора
+    setTimeout(()=>{ typing.remove(); }, 1000);
+  }
+
+  function wizardReply(text){
+    // оператор кликает шаблон — ответ появляется через ~1 сек (имитация «ИИ»)
+    const typing=addMsg('печатает…','bot typing');
+    setTimeout(()=>{
+      typing.remove();
+      addMsg(text,'bot');
+    }, 1000);
+  }
+</script>
+</body>
+</html>
