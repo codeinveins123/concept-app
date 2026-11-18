@@ -152,7 +152,7 @@
 <header>
   <span class="badge">ЛЕКЦИЯ 6</span>
   <h1>Концептуальное проектирование</h1>
-  <p>Paper Prototyping · Wireframes · Метод «Волшебник страны Оз». Живой демо-конспект.</p>
+  <p>Paper Prototyping · Figma · Метод «Волшебник страны Оз». Живой демо-конспект.</p>
 </header>
 
 <main>
@@ -173,8 +173,8 @@
         <div class="sketch">[ набросок от руки ]<br>стикеры + маркер</div>
       </div>
       <div class="fidelity mid">
-        <h3>🔲 Mid-Fidelity — Wireframe</h3>
-        <p>Ч/б цифровой каркас (Wireframe.cc). Проверяем <b>сетку и навигацию</b>.</p>
+        <h3>🔲 Mid-Fidelity — Figma</h3>
+        <p>Ч/б цифровой каркас (Figma). Проверяем <b>сетку и навигацию</b>.</p>
         <ul>
           <li>Без цвета и контента — только структура</li>
           <li>Проверяем расположение блоков и переходы</li>
@@ -188,7 +188,7 @@
         </div>
       </div>
     </div>
-    <p class="step-tip">Сначала 5-минутный скетч на A4, потом переносим его в Wireframe.cc как ч/б каркас.</p>
+    <p class="step-tip">Сначала 5-минутный скетч на A4, потом переносим его в Figma.cc как ч/б каркас.</p>
   </section>
 
   <!-- ШАГ 2 -->
@@ -293,25 +293,66 @@
     return d;
   }
 
+  // Шаблоны «волшебника» + ключевые слова для авто-подбора
+  const TEMPLATES = [
+    {
+      keywords: ['завтра','расписание','пары','что у меня'],
+      reply: 'Завтра у вас 3 пары: ЧКВ (9:00), Матан (11:00), Английский (13:30).'
+    },
+    {
+      keywords: ['перенес','перенос','пятниц','сдвин','отмен'],
+      reply: 'Готово! Пара по ЧКВ перенесена на пятницу, 14:00. Напоминание придёт за час.'
+    },
+    {
+      keywords: ['свободн','окно','когда можно','забронир'],
+      reply: 'Свободное окно: среда 15:00–17:00 и пятница 10:00–12:00. Забронировать?'
+    },
+    {
+      keywords: ['напомин','уведом','оповест'],
+      reply: 'Напоминание включено: за 30 минут до каждой пары в Telegram.'
+    }
+  ];
+
+  // Подбор ответа по ключевым словам
+  function pickReply(userText){
+    const t = userText.toLowerCase();
+    for (const tpl of TEMPLATES){
+      if (tpl.keywords.some(k => t.includes(k))) return tpl.reply;
+    }
+    return 'Понял запрос! Уточните, пожалуйста: расписание, перенос, свободное окно или напоминания?';
+  }
+
+  // Отправка сообщения пользователем — с авто-ответом «волшебника»
   function sendMsg(){
     const input=document.getElementById('userInput');
     const val=input.value.trim();
     if(!val) return;
+
     addMsg(val,'user');
     input.value='';
+
     const typing=addMsg('печатает…','bot typing');
-    // «Волшебник» отвечает за 1 секунду — но ждёт шаблон оператора
-    setTimeout(()=>{ typing.remove(); }, 1000);
+    const reply = pickReply(val); // «оператор» мгновенно подбирает шаблон
+
+    setTimeout(()=>{
+      typing.remove();
+      addMsg(reply,'bot');
+    }, 1000); // имитация задержки «ИИ» — 1 секунда
   }
 
+  // Кнопки шаблонов оператора (ручной выбор)
   function wizardReply(text){
-    // оператор кликает шаблон — ответ появляется через ~1 сек (имитация «ИИ»)
     const typing=addMsg('печатает…','bot typing');
     setTimeout(()=>{
       typing.remove();
       addMsg(text,'bot');
     }, 1000);
   }
+
+  // Фокус на поле ввода при загрузке — удобнее для демо
+  window.addEventListener('load', ()=>{
+    document.getElementById('userInput').focus();
+  });
 </script>
 </body>
 </html>
