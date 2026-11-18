@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Лекция 6 — Прототипирование</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0f1220; --panel:#171a2b; --card:#1e2238; --line:#2c3150;
@@ -12,19 +15,21 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
-    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
     background:var(--bg);color:var(--text);line-height:1.6;
     padding:0 0 80px;
+    -webkit-font-smoothing:antialiased;
   }
   header{
     padding:48px 24px 32px;text-align:center;
     background:radial-gradient(circle at 50% 0%,#23285a 0%,transparent 70%);
   }
-  header h1{font-size:2rem;margin-bottom:8px}
+  header h1{font-size:2rem;margin-bottom:8px;font-weight:800;letter-spacing:-.5px}
   header p{color:var(--muted);max-width:640px;margin:0 auto}
   .badge{
     display:inline-block;background:var(--accent);color:#fff;font-size:.75rem;
     padding:4px 12px;border-radius:999px;margin-bottom:16px;letter-spacing:.5px;
+    font-weight:700;
   }
   main{max-width:1000px;margin:0 auto;padding:0 24px}
   section{
@@ -33,6 +38,7 @@
   }
   section h2{
     font-size:1.3rem;margin-bottom:18px;display:flex;align-items:center;gap:10px;
+    font-weight:700;
   }
   section h2 .num{
     background:var(--accent);color:#fff;width:30px;height:30px;border-radius:50%;
@@ -43,7 +49,7 @@
   .fidelity{
     background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;
   }
-  .fidelity h3{font-size:1.05rem;margin-bottom:8px}
+  .fidelity h3{font-size:1.05rem;margin-bottom:8px;font-weight:700}
   .fidelity.low h3{color:var(--warn)}
   .fidelity.mid h3{color:var(--accent2)}
   .fidelity ul{margin:12px 0 0 18px;color:var(--muted);font-size:.92rem}
@@ -63,7 +69,7 @@
   .wire .body{background:repeating-linear-gradient(0deg,#2a2f4d,#2a2f4d 6px,transparent 6px,transparent 14px);border-radius:4px}
   .wire .foot{height:14px;background:#3a4066;border-radius:3px;width:40%}
 
-  /* Course card demo */
+  /* Course card */
   .card-demo{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
   .course-card{
     background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -73,12 +79,14 @@
   .course-card .tag{
     font-size:.7rem;background:rgba(108,140,255,.2);color:var(--accent);
     padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:12px;
+    font-weight:700;
   }
-  .course-card h4{font-size:1.1rem;margin-bottom:6px}
+  .course-card h4{font-size:1.1rem;margin-bottom:6px;font-weight:700}
   .course-card .meta{color:var(--muted);font-size:.85rem;margin-bottom:14px}
   .btn{
     background:var(--accent);color:#fff;border:none;padding:10px 18px;
     border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:600;transition:.2s;
+    font-family:inherit;
   }
   .btn:hover{filter:brightness(1.12)}
   .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
@@ -94,12 +102,13 @@
     background:var(--panel);border:1px solid var(--line);border-radius:16px;
     padding:28px;max-width:440px;width:100%;position:relative;
   }
-  .modal h3{margin-bottom:6px}
+  .modal h3{margin-bottom:6px;font-weight:700}
   .modal .sub{color:var(--muted);font-size:.9rem;margin-bottom:18px}
   .modal label{display:block;font-size:.82rem;color:var(--muted);margin:12px 0 5px}
   .modal input,.modal select{
     width:100%;background:#12152a;border:1px solid var(--line);border-radius:9px;
     padding:10px 12px;color:var(--text);font-size:.92rem;outline:none;
+    font-family:inherit;
   }
   .modal input:focus,.modal select:focus{border-color:var(--accent)}
   .modal-close{
@@ -124,17 +133,19 @@
   .oz-input input{
     flex:1;background:#12152a;border:1px solid var(--line);border-radius:10px;
     padding:11px 14px;color:var(--text);outline:none;font-size:.9rem;
+    font-family:inherit;
   }
   .oz-input input:focus{border-color:var(--accent2)}
   .operator-panel{
     margin-top:18px;border-top:1px dashed var(--line);padding-top:16px;
   }
   .operator-panel h4{font-size:.85rem;color:var(--accent2);margin-bottom:10px;
-    text-transform:uppercase;letter-spacing:.5px}
+    text-transform:uppercase;letter-spacing:.5px;font-weight:700}
   .templates{display:flex;flex-wrap:wrap;gap:8px}
   .tpl{
     background:#12152a;border:1px solid var(--line);color:var(--muted);
     padding:8px 12px;border-radius:9px;font-size:.82rem;cursor:pointer;transition:.2s;
+    font-family:inherit;
   }
   .tpl:hover{border-color:var(--accent2);color:var(--text)}
   .note{
@@ -145,6 +156,77 @@
   .note b{color:var(--accent2)}
   .step-tip{color:var(--muted);font-size:.85rem;margin-top:8px}
   footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:40px}
+
+  /* === Мини-игра === */
+  .game-wrap{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px;margin-top:16px;
+  }
+  .game-hud{
+    display:flex;align-items:center;gap:20px;margin-bottom:12px;
+    font-size:.95rem;color:var(--muted);
+  }
+  .game-hud b{color:var(--text);font-size:1.1rem}
+  .game-hud .btn{margin-left:auto}
+  .game-field{
+    position:relative;height:400px;border-radius:12px;overflow:hidden;
+    background:
+      radial-gradient(circle at 30% 20%, #23285a 0%, transparent 60%),
+      radial-gradient(circle at 70% 80%, #1e3a3a 0%, transparent 60%),
+      #12152a;
+    border:1px solid var(--line);
+    cursor:crosshair;
+  }
+  .game-overlay{
+    position:absolute;inset:0;display:grid;place-items:center;
+    color:var(--muted);font-size:.95rem;text-align:center;padding:20px;
+    pointer-events:none;transition:.2s;z-index:5;
+  }
+  .game-overlay.hidden{opacity:0}
+
+  /* Стикер — мини-блок интерфейса */
+  .sticker{
+    position:absolute;width:140px;min-height:96px;
+    background:#fff;border-radius:10px;
+    padding:12px 12px 10px;
+    cursor:pointer;user-select:none;
+    box-shadow:0 8px 20px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.2);
+    transition:transform .12s ease-out, opacity .2s, box-shadow .15s;
+    animation:pop .25s ease-out;
+    display:flex;flex-direction:column;gap:6px;
+    overflow:hidden;
+  }
+  .sticker::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:var(--st-color,#6c8cff);
+  }
+  .sticker:hover{
+    transform:scale(1.06) rotate(-1.5deg);
+    box-shadow:0 12px 28px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.2);
+  }
+  .sticker.hit{opacity:0;transform:scale(1.5) rotate(8deg);pointer-events:none}
+  @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+
+  .sticker .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.7rem;font-weight:700;letter-spacing:.3px;
+    color:var(--st-color,#6c8cff);
+    display:flex;align-items:center;gap:4px;
+    margin-top:2px;
+  }
+  .sticker .tag::before{content:"<";opacity:.6}
+  .sticker .tag::after{content:">";opacity:.6}
+  .sticker .label{
+    font-size:.72rem;color:#4a4f6a;font-weight:600;line-height:1.25;
+  }
+  .sticker .mini{
+    background:#eef0f8;border-radius:4px;height:6px;width:100%;
+  }
+  .sticker .mini.sm{width:60%}
+  .sticker .mini.btn-bar{
+    background:var(--st-color,#6c8cff);height:14px;border-radius:4px;
+    width:70%;margin-top:auto;
+  }
 </style>
 </head>
 <body>
@@ -188,7 +270,7 @@
         </div>
       </div>
     </div>
-    <p class="step-tip">Сначала 5-минутный скетч на A4, потом переносим его в Figma.cc как ч/б каркас.</p>
+    <p class="step-tip">Сначала 5-минутный скетч на A4, потом переносим его в Figma как ч/б каркас.</p>
   </section>
 
   <!-- ШАГ 2 -->
@@ -261,7 +343,7 @@
           <button class="tpl" onclick="wizardReply('Завтра у вас 3 пары: ЧКВ (9:00), Матан (11:00), Английский (13:30).')">📅 Расписание на завтра</button>
           <button class="tpl" onclick="wizardReply('Готово! Пара по ЧКВ перенесена на пятницу, 14:00. Напоминание придёт за час.')">🔄 Перенос пары</button>
           <button class="tpl" onclick="wizardReply('Свободное окно: среда 15:00–17:00 и пятница 10:00–12:00. Забронировать?')">🕒 Свободное окно</button>
-          <button class="tpl" onclick="wizardReply('Напоминание включено: за 30 минут до каждой пары')">🔔 Напоминания</button>
+          <button class="tpl" onclick="wizardReply('Напоминание включено: за 30 минут до каждой пары в Telegram.')">🔔 Напоминания</button>
         </div>
         <div class="note">
           <b>Суть метода:</b> пользователь верит, что общается с ИИ, а на деле за ширмой —
@@ -271,17 +353,44 @@
     </div>
   </section>
 
+  <!-- ШАГ 4: Мини-игра -->
+  <section>
+    <h2><span class="num">4</span> Мини-игра «Поймай компонент»</h2>
+    <p style="color:var(--muted);font-size:.92rem;margin-bottom:12px">
+      Управление мышью + семантическая вёрстка. Кликай по UI-компонентам, пока они не «улетели».
+      Каждый стикер — это реальный HTML-тег с назначением, а не бессмысленный div.
+    </p>
+
+    <div class="game-wrap">
+      <div class="game-hud">
+        <div>Счёт: <b id="score">0</b></div>
+        <div>Время: <b id="time">20</b> с</div>
+        <button class="btn" id="startBtn" onclick="startGame()">Старт</button>
+      </div>
+      <div class="game-field" id="gameField">
+        <div class="game-overlay" id="gameOverlay">Нажми «Старт» и лови UI-компоненты 🎯</div>
+      </div>
+    </div>
+    <div class="note">
+      <b>Связь с темой:</b> Low-Fi скетч — это стикеры с назначением. Здесь каждый стикер —
+      семантический тег (<code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code>…),
+      который потом станет частью реального интерфейса.
+    </div>
+  </section>
+
 </main>
 
 <footer>Демо-стенд</footer>
 
 <script>
+  /* ---------- Модалка ---------- */
   function openModal(){document.getElementById('modal').classList.add('open')}
   function closeModal(){document.getElementById('modal').classList.remove('open')}
   document.getElementById('modal').addEventListener('click',e=>{
     if(e.target.id==='modal') closeModal();
   });
 
+  /* ---------- Волшебник страны Оз ---------- */
   const chat=document.getElementById('chat');
 
   function addMsg(text,who){
@@ -293,7 +402,6 @@
     return d;
   }
 
-  // Шаблоны «волшебника» + ключевые слова для авто-подбора
   const TEMPLATES = [
     {
       keywords: ['завтра','расписание','пары','что у меня'],
@@ -313,7 +421,6 @@
     }
   ];
 
-  // Подбор ответа по ключевым словам
   function pickReply(userText){
     const t = userText.toLowerCase();
     for (const tpl of TEMPLATES){
@@ -322,7 +429,6 @@
     return 'Понял запрос! Уточните, пожалуйста: расписание, перенос, свободное окно или напоминания?';
   }
 
-  // Отправка сообщения пользователем — с авто-ответом «волшебника»
   function sendMsg(){
     const input=document.getElementById('userInput');
     const val=input.value.trim();
@@ -332,15 +438,14 @@
     input.value='';
 
     const typing=addMsg('печатает…','bot typing');
-    const reply = pickReply(val); // «оператор» мгновенно подбирает шаблон
+    const reply = pickReply(val);
 
     setTimeout(()=>{
       typing.remove();
       addMsg(reply,'bot');
-    }, 1000); // имитация задержки «ИИ» — 1 секунда
+    }, 1000);
   }
 
-  // Кнопки шаблонов оператора (ручной выбор)
   function wizardReply(text){
     const typing=addMsg('печатает…','bot typing');
     setTimeout(()=>{
@@ -349,10 +454,106 @@
     }, 1000);
   }
 
-  // Фокус на поле ввода при загрузке — удобнее для демо
   window.addEventListener('load', ()=>{
     document.getElementById('userInput').focus();
   });
+
+  /* ---------- Мини-игра «Поймай компонент» ---------- */
+  const GAME = {
+    running: false, score: 0, timeLeft: 20,
+    spawnTimer: null, countdownTimer: null,
+    field: null, overlay: null, scoreEl: null, timeEl: null
+  };
+
+  const STICKER_PRESETS = [
+    { tag:'header',  color:'#6c8cff', label:'Шапка сайта',    icon:'🔝', bar:'btn'  },
+    { tag:'nav',     color:'#22d3a6', label:'Навигация',       icon:'🧭', bar:'btn'  },
+    { tag:'article', color:'#ffb020', label:'Карточка курса',  icon:'📝', bar:'line' },
+    { tag:'button',  color:'#ff6b8a', label:'Кнопка «Купить»', icon:'🖱️', bar:'btn'  },
+    { tag:'input',   color:'#c084fc', label:'Поле ввода',      icon:'⌨️', bar:'line' },
+    { tag:'footer',  color:'#94a3b8', label:'Подвал сайта',    icon:'🔻', bar:'line' },
+    { tag:'section', color:'#38bdf8', label:'Блок контента',   icon:'📦', bar:'btn'  },
+    { tag:'aside',   color:'#facc15', label:'Боковая панель',  icon:'📌', bar:'line' },
+    { tag:'modal',   color:'#f472b6', label:'Модальное окно',  icon:'🪟', bar:'btn'  },
+    { tag:'form',    color:'#4ade80', label:'Форма записи',    icon:'📋', bar:'line' }
+  ];
+
+  function startGame(){
+    if (GAME.running) return;
+    GAME.running = true;
+    GAME.score = 0;
+    GAME.timeLeft = 20;
+    GAME.field    = document.getElementById('gameField');
+    GAME.overlay  = document.getElementById('gameOverlay');
+    GAME.scoreEl  = document.getElementById('score');
+    GAME.timeEl   = document.getElementById('time');
+
+    GAME.scoreEl.textContent = '0';
+    GAME.timeEl.textContent  = '20';
+    GAME.overlay.classList.add('hidden');
+    GAME.field.querySelectorAll('.sticker').forEach(s => s.remove());
+    document.getElementById('startBtn').disabled = true;
+
+    GAME.spawnTimer = setInterval(spawnSticker, 550);
+    GAME.countdownTimer = setInterval(() => {
+      GAME.timeLeft--;
+      GAME.timeEl.textContent = GAME.timeLeft;
+      if (GAME.timeLeft <= 0) endGame();
+    }, 1000);
+
+    spawnSticker();
+  }
+
+  function spawnSticker(){
+    if (!GAME.running) return;
+    const field = GAME.field;
+    const W = field.clientWidth, H = field.clientHeight;
+    const sw = 140, sh = 96;
+    if (W < sw + 20 || H < sh + 20) return;
+
+    const preset = STICKER_PRESETS[Math.floor(Math.random()*STICKER_PRESETS.length)];
+
+    const el = document.createElement('div');
+    el.className = 'sticker';
+    el.style.left = Math.random() * (W - sw - 20) + 10 + 'px';
+    el.style.top  = Math.random() * (H - sh - 20) + 10 + 'px';
+    el.style.setProperty('--st-color', preset.color);
+
+    el.innerHTML = `
+      <div class="tag">${preset.tag}</div>
+      <div class="label">${preset.icon} ${preset.label}</div>
+      <div class="mini sm"></div>
+      <div class="mini"></div>
+      <div class="mini btn-bar" ${preset.bar==='line'?'style="display:none"':''}></div>
+    `;
+
+    const life = 1600 + Math.random() * 900;
+    const killer = setTimeout(() => {
+      if (!el.classList.contains('hit')) el.remove();
+    }, life);
+
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!GAME.running || el.classList.contains('hit')) return;
+      clearTimeout(killer);
+      el.classList.add('hit');
+      GAME.score++;
+      GAME.scoreEl.textContent = GAME.score;
+      setTimeout(() => el.remove(), 220);
+    });
+
+    field.appendChild(el);
+  }
+
+  function endGame(){
+    GAME.running = false;
+    clearInterval(GAME.spawnTimer);
+    clearInterval(GAME.countdownTimer);
+    GAME.field.querySelectorAll('.sticker').forEach(s => s.remove());
+    GAME.overlay.classList.remove('hidden');
+    GAME.overlay.innerHTML = `Время вышло! 🎉<br>Твой счёт: <b style="color:var(--accent2);font-size:1.4rem;margin-left:6px">${GAME.score}</b><br><span style="font-size:.82rem">Нажми «Старт», чтобы сыграть ещё</span>`;
+    document.getElementById('startBtn').disabled = false;
+  }
 </script>
 </body>
 </html>
